@@ -61,6 +61,67 @@ public class HexUtils{
         }
         return d;
     }
+
+    /**
+    * write byte data to a bin file
+    *
+    */
+    public static boolean writeBinFile(byte [] inputBuf, String strFileDir)
+    {
+        try
+        {
+            File fileOut = new File(strFileDir);
+            FileOutputStream fileOutputStreamObj = new FileOutputStream (fileOut);
+            fileOutputStreamObj.write(inputBuf);  
+            fileOutputStreamObj.close();  
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    /**
+    * read bin file, read data to a byte array
+    * @param strFileDir: input file name
+    */
+    public static byte [] readBinFile(String strFileDir)
+    {
+        byte [] au08ReadBinData=null;
+        File mfile = new File(strFileDir);
+
+        try
+        {
+            long start = System.currentTimeMillis();            
+            FileInputStream fileIputStreamObj = new  FileInputStream (mfile);              
+
+            int binFileDataLen= fileIputStreamObj.available();
+            au08ReadBinData=new byte[binFileDataLen];
+            System.out.printf("data len is %02x ",  binFileDataLen);
+            int readOneByte;
+
+            int counter=0;
+            fileIputStreamObj.read(au08ReadBinData);  
+
+            /* this method is slowly
+            while ((readOneByte = fileIputStreamObj.read()) != -1) 
+            {                 
+                au08ReadBinData[counter++]=(byte)readOneByte;              
+            }
+            */
+ 
+            fileIputStreamObj.close();             
+            long end=System.currentTimeMillis();
+            // System.out.printf("\ntime is %d ", (end-start));
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return au08ReadBinData;
+    }
  
     /**
     * read the hex file, save all the data to List
