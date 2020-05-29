@@ -30,10 +30,14 @@ public class HexUtils{
     public static final byte HEX_TYPE_EX_LINEAR_ADD=4;
 
     /**for debug purpose*/
-    public static final boolean DEBUG_FLAG=false;
+    public static  boolean DEBUG_FLAG=false;
 
     /**list variable for hex data*/
-    public static List<Object> listObjHex=null; 
+    public static List<Object> listObjHex=null;
+
+    public static byte hexStartAddress[]=new byte[4];
+    public static boolean isHexStartAddressReady=false;
+
 
     /**
     *@brief char to byte
@@ -230,6 +234,16 @@ public class HexUtils{
         return listObj;
     }
 
+    public static byte[] getHexFileStartAddress()
+    {
+        byte localStartAdd[]=null;
+
+        if(isHexStartAddressReady)
+            localStartAdd=hexStartAddress;
+
+        return localStartAdd;
+    }
+
     /**
     *@brief read all hex pure data to a byte buffer, it depends on the List 
     *       take care: if the hex file is not continuous address, this function do not padding ZERO
@@ -252,6 +266,11 @@ public class HexUtils{
             hexObj=(HexData)listObjHex.get(i);
             allDataLen+=hexObj.getDataBlockLength();
         }
+
+        //get start address
+        hexObj=(HexData)listObjHex.get(0);
+        hexStartAddress=hexObj.getAddress();
+        isHexStartAddressReady=true;
 
         byte pureDataBuf[]=new byte[allDataLen];
         int counter=0;
