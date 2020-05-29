@@ -98,7 +98,7 @@ public class HexUtils{
 
             int binFileDataLen= fileIputStreamObj.available();
             au08ReadBinData=new byte[binFileDataLen];
-            System.out.printf("data len is %02x ",  binFileDataLen);
+            //System.out.printf("bin file data len is %02x ",  binFileDataLen);
             int readOneByte;
 
             int counter=0;
@@ -158,6 +158,7 @@ public class HexUtils{
             int oneBlockCounter=0;
             byte blockStartAddress[]=new byte[4];
             boolean pureHexData=false;
+            int nextLine=0;
 
             while((str = bufferedReaderObj.readLine()) != null)
             {
@@ -186,6 +187,9 @@ public class HexUtils{
                     }
                 }
 
+                //used to read the block start address
+                nextLine++;
+
                 if((oneLineHexDataType==HEX_TYPE_EX_LINEAR_ADD))
                 {
                     blockStartAddress[0]=hexByteBuf[HEX_LINE_DATA_OFS];
@@ -195,16 +199,19 @@ public class HexUtils{
                     nextBlockIsComing=true;
                     firstTime=false; 
                     oneBlockCounter=0;
+                    nextLine=0;
                 }
 
                 //set full block start address
                 if(blockStart)
                 {
-                     
-                    blockStartAddress[2]=hexByteBuf[HEX_LINE_ADDRESS_OFS];
-                    blockStartAddress[3]=hexByteBuf[HEX_LINE_ADDRESS_OFS+1];
-                    //after fill the address, set the flag as false
-                    blockStart=false;
+                    if(nextLine==1)
+                    {
+                        blockStartAddress[2]=hexByteBuf[HEX_LINE_ADDRESS_OFS];
+                        blockStartAddress[3]=hexByteBuf[HEX_LINE_ADDRESS_OFS+1];
+                        //after fill the address, set the flag as false
+                        blockStart=false;
+                    }
                 }
 
                 if(oneLineHexDataType==HEX_TYPE_DATA)
@@ -327,6 +334,7 @@ public class HexUtils{
     
         //get hex start address
         hexObj=(HexData)listObjHex.get(0);
+        
         byte startAddress[]=hexObj.getAddress();    //this address should be 4 bytes
         int udAddress=0;
  
